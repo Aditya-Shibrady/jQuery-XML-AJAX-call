@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>PW3</title>
+	<link rel="stylesheet" type="text/css" href="./style.css" />
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		function hider() {
+		$( "#last" ).hide();
+	}
+	</script>
+	<script type="text/javascript">
+		function home() {
+			window.location = "books.html"
+		}
+	</script>
+	<script type="text/javascript">
+		var executed = false;
+		function loadData() {
+			$.ajax({
+				url : "books.xml",
+				dataType : "xml",
+				success : function(data) {
+					if (!executed) {
+						executed = true;
+						var table = "<tr><th>Title</th><th>Author(s)</th><th>Year</th><th>Price</th><th>Category</th></tr>";
+						$(data).find('book').each(
+								function () {
+									var manyAuthors = "";
+									var title = $(this).find('title').text();
+									var year = $(this).find('year').text();
+									var price = $(this).find('price').text();
+									var category = $(this).attr('category');
+									$(this).find('author').each(function () {
+										manyAuthors = manyAuthors + $(this).text() + ", ";
+									});
+									table += "<tr><td>" + title + "</td><td>" + manyAuthors + "</td><td>" + year + "</td><td>" + price + "</td><td>" + category + "</td></tr>";
+								});
+					}
+					$("#demo").append(table);
+					$( "#last" ).show();
+					$( "#but" ).hide();
+				},
+				error : function() {
+					alert("error loading file");
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="hider()">
+<div class="container-fluid">
+	<br><br><br>
+	<div class="row">
+		<center><button id="but" type="button" class="btn btn-lg btn-primary" onclick="loadData()">Load XML</button></center>
+	</div>
+	<br><br>
+	<div class="row">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-8">
+			<table class="table" id="demo"></table></div>
+		<div class="col-xs-2"></div>
+	</div>
+	<div class="row">
+		<center><button id="last" type="button" class="btn btn-lg btn-primary" onclick="home()">Back</button></center>
+	</div>
+	</div>
+</body>
+</html>
